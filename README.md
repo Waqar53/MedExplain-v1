@@ -1,76 +1,112 @@
+<div align="center">
+
 # MedExplain
 
-**Medical Report Analysis System**
+### Healthcare Report Analysis & Interpretation System
 
-A healthcare information system that provides automated interpretation assistance for medical laboratory reports and imaging studies. Designed to help patients understand their medical documentation while emphasizing the importance of professional medical consultation.
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+*An enterprise-grade medical report analysis system designed to help patients understand their laboratory results through automated interpretation, while maintaining strict compliance with healthcare communication standards.*
+
+[Features](#features) • [Architecture](#architecture) • [Installation](#installation) • [API Reference](#api-reference) • [Screenshots](#screenshots)
 
 ---
 
-## Important Notice
-
-**This system does not provide medical diagnoses.**
-
-All analysis results are for educational and informational purposes only. Users must consult qualified healthcare professionals before making any medical decisions. This software is not a substitute for professional medical advice, diagnosis, or treatment.
-
----
+</div>
 
 ## Overview
 
-MedExplain processes medical reports and provides structured interpretations in accessible language. The system is designed with healthcare compliance in mind, incorporating:
+**MedExplain** is a production-ready healthcare information system that processes medical laboratory reports and provides structured, patient-friendly interpretations. Built with a focus on **safety**, **compliance**, and **scalability**, it demonstrates modern software engineering practices suitable for healthcare environments.
 
-- Mandatory safety disclaimers on all outputs
-- Language filtering to prevent diagnostic claims
-- Confidence scoring for transparency
-- Professional clinical terminology
+> **Important**: This system is designed for educational and informational purposes only. It does not provide medical diagnoses. All outputs require review by qualified healthcare professionals.
 
-### Key Features
+---
 
-- **Document Processing**: PDF and text file analysis with content extraction
-- **Medical Imaging Support**: Processing pipeline for radiograph and imaging files
-- **Automated Interpretation**: Rule-based and LLM-assisted content analysis
-- **Safety Compliance**: Built-in safeguards against inappropriate medical claims
-- **Report Generation**: Professional PDF output with proper disclaimers
+## Features
+
+### Core Capabilities
+
+| Feature | Description |
+|---------|-------------|
+| **Document Processing** | Extracts and analyzes content from PDF and text-based medical reports |
+| **Value Recognition** | Identifies laboratory values (glucose, cholesterol, CBC, metabolic panels, etc.) |
+| **Intelligent Interpretation** | Rule-based analysis with optional LLM enhancement via Google Gemini API |
+| **Medical Imaging Pipeline** | Processing infrastructure for radiographic images |
+| **PDF Report Generation** | Professional export functionality with proper medical disclaimers |
+| **Real-time API** | RESTful endpoints for seamless integration with healthcare systems |
+
+### Safety & Compliance
+
+- **Mandatory Disclaimers**: Every output includes legally-compliant medical notices
+- **Language Filtering**: Automatic detection and modification of diagnostic or alarming terminology
+- **Confidence Scoring**: Transparent reliability indicators for all interpretations
+- **Audit Logging**: Structured JSON logging for compliance and debugging
+- **Rate Limiting**: Built-in protection against API abuse
 
 ---
 
 ## Architecture
 
 ```
-medexplain/
-├── app/
-│   ├── api/                 # REST API endpoints
-│   │   ├── routes.py        # Request handlers
-│   │   └── middleware.py    # Request processing middleware
-│   ├── core/                # Core processing modules
-│   │   ├── llm_engine.py    # Language model integration
-│   │   ├── vision_model.py  # Image processing pipeline
-│   │   ├── pdf_extractor.py # Document parsing
-│   │   └── text_processor.py# Text analysis utilities
-│   ├── services/            # Business logic
-│   │   ├── report_analyzer.py   # Analysis orchestration
-│   │   ├── safety_checker.py    # Compliance validation
-│   │   └── report_generator.py  # Output generation
-│   └── models/              # Data models
-├── frontend/                # Web interface
-│   ├── index.html          # Application interface
-│   ├── styles.css          # Styling
-│   └── app.js              # Client application
-└── tests/                   # Test suite
+┌─────────────────────────────────────────────────────────────────────┐
+│                           CLIENT LAYER                               │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐     │
+│  │   Web Interface  │  │   REST API      │  │   PDF Export    │     │
+│  │   (HTML/JS/CSS)  │  │   Consumers     │  │   Service       │     │
+│  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘     │
+└───────────┼────────────────────┼────────────────────┼───────────────┘
+            │                    │                    │
+            ▼                    ▼                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                           API GATEWAY                                │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │  FastAPI Application                                         │   │
+│  │  • Request Validation  • CORS Handling  • Rate Limiting     │   │
+│  │  • Error Handling      • Logging        • Multi-tenant      │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
+            │
+            ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        SERVICE LAYER                                 │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐  │
+│  │   Report     │  │   Safety     │  │   Report Generator       │  │
+│  │   Analyzer   │  │   Checker    │  │   (Jinja2 + WeasyPrint)  │  │
+│  └──────┬───────┘  └──────┬───────┘  └──────────────────────────┘  │
+└─────────┼─────────────────┼─────────────────────────────────────────┘
+          │                 │
+          ▼                 ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                         CORE LAYER                                   │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │
+│  │ PDF Extractor │  │ LLM Engine   │  │ Vision Model │              │
+│  │ (pdfplumber)  │  │ (Gemini API) │  │ (PyTorch)    │              │
+│  └──────────────┘  └──────────────┘  └──────────────┘              │
+│  ┌──────────────┐  ┌──────────────┐                                 │
+│  │Text Processor │  │Image Process │                                 │
+│  │ (NLP Utils)   │  │ (OpenCV)     │                                 │
+│  └──────────────┘  └──────────────┘                                 │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Technical Stack
+## Tech Stack
 
-| Component      | Technology                          |
-|----------------|-------------------------------------|
-| Backend        | Python 3.9+, FastAPI                |
-| Document Processing | pdfplumber, Pillow             |
-| Machine Learning | PyTorch, torchvision             |
-| LLM Integration  | Google Gemini API (optional)      |
-| Report Generation | Jinja2, WeasyPrint              |
-| Web Interface   | HTML5, CSS3, JavaScript (Vanilla)  |
-| Deployment      | Docker, Docker Compose             |
+| Layer | Technologies |
+|-------|--------------|
+| **Backend** | Python 3.9+, FastAPI, Pydantic, Uvicorn |
+| **Document Processing** | pdfplumber, Pillow, OpenCV |
+| **Machine Learning** | PyTorch, torchvision (ResNet50/DenseNet121) |
+| **LLM Integration** | Google Gemini API (optional), rule-based fallback |
+| **Report Generation** | Jinja2, WeasyPrint |
+| **Logging** | structlog (JSON structured logging) |
+| **Security** | slowapi (rate limiting), input validation |
+| **Frontend** | Vanilla JavaScript, CSS3, responsive design |
+| **Deployment** | Docker, Docker Compose |
 
 ---
 
@@ -80,80 +116,35 @@ medexplain/
 
 - Python 3.9 or higher
 - pip package manager
-- Virtual environment (recommended)
+- (Optional) Docker & Docker Compose
 
-### Setup
+### Quick Start
 
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/medexplain.git
-cd medexplain
+# Clone the repository
+git clone https://github.com/Waqar53/MedExplain-v1.git
+cd MedExplain-v1
 
-# Create virtual environment
+# Create and activate virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
+# Configure environment (optional - works without API key)
 cp .env.example .env
-# Edit .env with your configuration
-```
 
-### Configuration
-
-Create a `.env` file with the following variables:
-
-```env
-# Optional: External LLM provider
-GEMINI_API_KEY=your_api_key_here
-
-# Application settings
-DEBUG=false
-LOG_LEVEL=INFO
-PORT=8000
-
-# Processing limits
-MAX_FILE_SIZE_MB=10
-RATE_LIMIT_PER_MINUTE=30
-```
-
----
-
-## Usage
-
-### Starting the Server
-
-```bash
-# Development
+# Start the server
 uvicorn app.main:app --reload --port 8000
-
-# Production
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
-### Web Interface
+Access the application at: **http://localhost:8000**
 
-Access the application at `http://localhost:8000`
-
-### API Endpoints
-
-| Endpoint           | Method | Description                    |
-|-------------------|--------|--------------------------------|
-| `/health`         | GET    | System health check            |
-| `/upload-report`  | POST   | Upload laboratory report       |
-| `/upload-xray`    | POST   | Upload medical imaging file    |
-| `/generate-report`| POST   | Generate analysis report       |
-| `/create-pdf`     | POST   | Generate PDF document          |
-| `/download-pdf/{id}` | GET | Download generated PDF        |
-
----
-
-## Docker Deployment
+### Docker Deployment
 
 ```bash
-# Build and run
+# Build and run with Docker Compose
 docker-compose up -d
 
 # View logs
@@ -165,70 +156,191 @@ docker-compose down
 
 ---
 
-## Testing
+## API Reference
+
+### Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | System health check |
+| `POST` | `/upload-report` | Upload laboratory report (PDF/TXT) |
+| `POST` | `/upload-xray` | Upload medical imaging file |
+| `POST` | `/generate-report` | Generate analysis interpretation |
+| `POST` | `/create-pdf` | Generate PDF export |
+| `GET` | `/download-pdf/{id}` | Download generated PDF |
+| `GET` | `/docs` | Interactive API documentation |
+
+### Example Request
 
 ```bash
-# Run test suite
-pytest tests/ -v
+# Upload a report
+curl -X POST http://localhost:8000/upload-report \
+  -F "file=@lab_report.pdf"
 
-# Run with coverage
-pytest tests/ --cov=app --cov-report=html
+# Generate analysis
+curl -X POST http://localhost:8000/generate-report \
+  -H "Content-Type: application/json" \
+  -d '{"session_id": "your-session-id"}'
+```
+
+### Response Structure
+
+```json
+{
+  "session_id": "uuid",
+  "timestamp": "2026-01-12T18:00:00",
+  "explanation": {
+    "summary": "Report summary...",
+    "what_this_means": "Interpretation...",
+    "key_findings": ["Finding 1", "Finding 2"],
+    "common_next_steps": ["Step 1", "Step 2"]
+  },
+  "confidence": "high",
+  "confidence_score": 0.85,
+  "risk_level": "low",
+  "disclaimer": {
+    "main_disclaimer": "This analysis does not constitute a medical diagnosis...",
+    "consultation_reminder": "Consult a qualified healthcare provider..."
+  }
+}
 ```
 
 ---
 
-## Safety Guidelines
+## Screenshots
 
-This system implements multiple safety measures:
+### Upload Interface
+![Upload Interface](screenshots/interface.png)
 
-1. **No Diagnostic Claims**: All outputs explicitly state they are not medical diagnoses
-2. **Mandatory Disclaimers**: Every analysis includes consultation reminders
-3. **Language Filtering**: Removes alarming or inappropriate terminology
-4. **Confidence Scoring**: Transparent indication of analysis reliability
-5. **Professional Review Flags**: Identifies content requiring clinical review
-
-### Required Disclaimers
-
-All system outputs include:
-
-- "This analysis does not constitute a medical diagnosis"
-- "Consult a qualified healthcare provider before making medical decisions"
-- "Information provided is for educational purposes only"
+### Analysis Results
+![Analysis Results](screenshots/results.png)
 
 ---
 
-## Compliance Considerations
+## Project Structure
 
-When deploying this system:
+```
+medexplain/
+├── app/
+│   ├── api/
+│   │   ├── routes.py          # API endpoint definitions
+│   │   └── middleware.py      # Request processing, rate limiting
+│   ├── core/
+│   │   ├── llm_engine.py      # Language model integration
+│   │   ├── pdf_extractor.py   # Document parsing
+│   │   ├── text_processor.py  # NLP utilities
+│   │   ├── vision_model.py    # Image analysis (PyTorch)
+│   │   └── image_processor.py # Image preprocessing
+│   ├── services/
+│   │   ├── report_analyzer.py # Main analysis orchestration
+│   │   ├── safety_checker.py  # Compliance & safety validation
+│   │   └── report_generator.py# PDF generation
+│   ├── models/
+│   │   └── schemas.py         # Pydantic models
+│   ├── utils/
+│   │   ├── logger.py          # Structured logging
+│   │   └── file_validators.py # Input validation
+│   ├── config.py              # Configuration management
+│   └── main.py                # Application entry point
+├── frontend/
+│   ├── index.html             # Web interface
+│   ├── styles.css             # Styling
+│   └── app.js                 # Client-side logic
+├── tests/
+│   ├── test_api.py            # API integration tests
+│   └── test_safety_checker.py # Safety module tests
+├── Dockerfile                  # Container configuration
+├── docker-compose.yml          # Multi-service orchestration
+├── requirements.txt            # Python dependencies
+└── README.md
+```
 
-- Ensure compliance with applicable healthcare regulations (HIPAA, GDPR, etc.)
-- Implement appropriate access controls and audit logging
-- Review all outputs before clinical use
-- Maintain documentation of system limitations
+---
+
+## Configuration
+
+Create a `.env` file for configuration:
+
+```env
+# Optional: Google Gemini API for enhanced analysis
+GEMINI_API_KEY=your_api_key_here
+
+# Application Settings
+DEBUG=false
+LOG_LEVEL=INFO
+PORT=8000
+
+# Processing Limits
+MAX_FILE_SIZE_MB=10
+RATE_LIMIT_PER_MINUTE=30
+```
+
+> **Note**: The system operates fully without an API key using intelligent rule-based analysis.
+
+---
+
+## Testing
+
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run with coverage report
+pytest tests/ --cov=app --cov-report=html
+
+# Run specific test module
+pytest tests/test_safety_checker.py -v
+```
+
+---
+
+## Key Design Decisions
+
+### Safety-First Architecture
+Every output passes through the `SafetyChecker` module, which:
+- Filters diagnostic language ("you have", "diagnosis is")
+- Softens alarming terminology ("cancer" → "concerning finding")
+- Injects mandatory disclaimers
+- Flags content requiring professional review
+
+### Graceful Degradation
+The system operates at full capacity without external dependencies:
+- **No API Key**: Rule-based analysis with value extraction
+- **No WeasyPrint**: HTML report fallback
+- **No OCR**: Native PDF text extraction
+
+### Modular Design
+Each component is independently testable and replaceable:
+- Swap LLM providers without code changes
+- Add new report types through configuration
+- Extend safety rules via simple dictionary additions
 
 ---
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/improvement`)
-3. Commit changes (`git commit -am 'Add improvement'`)
-4. Push to branch (`git push origin feature/improvement`)
-5. Create a Pull Request
+2. Create a feature branch (`git checkout -b feature/enhancement`)
+3. Commit changes (`git commit -am 'Add enhancement'`)
+4. Push to branch (`git push origin feature/enhancement`)
+5. Open a Pull Request
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## Disclaimer
 
-This software is provided "as is" without warranty of any kind. The developers and contributors are not liable for any damages arising from the use of this software. This system is not intended to replace professional medical advice, diagnosis, or treatment. Always seek the advice of qualified healthcare providers with questions regarding medical conditions.
+This software is provided for **educational and informational purposes only**. It is not intended to be a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of a qualified healthcare provider with any questions regarding a medical condition. The developers assume no liability for decisions made based on information provided by this system.
 
 ---
 
-**MedExplain** - Medical Report Analysis System  
-Version 1.0.0
+<div align="center">
+
+**Built with modern engineering practices for healthcare environments**
+
+</div>
