@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedExplain - Medical Report Analysis System</title>
+    <meta name="description" content="Healthcare information system for medical report interpretation assistance">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-text">MedExplain</span>
+                </div>
+                <p class="tagline">Medical Report Analysis System</p>
+            </div>
+        </header>
+
+        <!-- Medical Disclaimer Banner -->
+        <div class="disclaimer-banner">
+            <span class="disclaimer-icon">Important Notice:</span>
+            <span>This system does not provide medical diagnoses. All results require review by a qualified healthcare
+                professional.</span>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section" id="uploadSection">
+                <h2 class="section-title">Upload Medical Report</h2>
+                <p class="section-subtitle">Supported formats: PDF documents, text files, and medical imaging files</p>
+
+                <div class="upload-tabs">
+                    <button class="tab-btn active" data-tab="report">
+                        <span class="tab-icon"></span>
+                        Laboratory Report
+                    </button>
+                    <button class="tab-btn" data-tab="xray">
+                        <span class="tab-icon"></span>
+                        Medical Imaging
+                    </button>
+                </div>
+
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-dropzone" id="dropzone">
+                        <div class="dropzone-content">
+                            <div class="upload-icon">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="17 8 12 3 7 8" />
+                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                </svg>
+                            </div>
+                            <h3>Select or drop file here</h3>
+                            <p>or</p>
+                            <label class="upload-btn">
+                                <span>Browse Files</span>
+                                <input type="file" id="fileInput" accept=".pdf,.txt,.png,.jpg,.jpeg" hidden>
+                            </label>
+                            <p class="file-types">
+                                <span class="report-types">Accepted: PDF, TXT</span>
+                                <span class="xray-types" style="display:none;">Accepted: PNG, JPG, JPEG</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- File Preview -->
+                    <div class="file-preview" id="filePreview" style="display: none;">
+                        <div class="preview-card">
+                            <div class="preview-icon" id="previewIcon"></div>
+                            <div class="preview-info">
+                                <span class="preview-name" id="fileName"></span>
+                                <span class="preview-size" id="fileSize"></span>
+                            </div>
+                            <button class="remove-file" id="removeFile">Remove</button>
+                        </div>
+                        <button class="analyze-btn" id="analyzeBtn">
+                            <span>Process Report</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Additional Context -->
+                <div class="context-section" id="contextSection" style="display: none;">
+                    <label for="additionalContext">Clinical Notes (Optional)</label>
+                    <textarea id="additionalContext"
+                        placeholder="Enter relevant clinical history or notes for context..."></textarea>
+                </div>
+            </section>
+
+            <!-- Processing Section -->
+            <section class="processing-section" id="processingSection" style="display: none;">
+                <div class="processing-card">
+                    <div class="processing-animation">
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring delay-1"></div>
+                        <div class="pulse-ring delay-2"></div>
+                        <div class="processing-icon"></div>
+                    </div>
+                    <h3>Processing Report</h3>
+                    <p class="processing-step" id="processingStep">Extracting content...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2>Analysis Results</h2>
+                    <div class="results-actions">
+                        <button class="action-btn" id="downloadPdf">
+                            <span>Export PDF</span>
+                        </button>
+                        <button class="action-btn secondary" id="newAnalysis">
+                            <span>New Analysis</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confidence & Risk Indicators -->
+                <div class="indicators-row">
+                    <div class="indicator-card confidence">
+                        <span class="indicator-label">Analysis Confidence</span>
+                        <div class="indicator-value" id="confidenceLevel">
+                            <span class="confidence-badge high">HIGH</span>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceFill" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="indicator-card risk">
+                        <span class="indicator-label">Priority Level</span>
+                        <div class="indicator-value" id="riskLevel">
+                            <span class="risk-badge low">ROUTINE</span>
+                        </div>
+                        <span class="risk-note">For informational reference only</span>
+                    </div>
+                </div>
+
+                <!-- Summary Card -->
+                <div class="result-card summary-card">
+                    <div class="card-header">
+                        <h3>Summary</h3>
+                    </div>
+                    <div class="card-content">
+                        <p id="summaryText">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- Interpretation -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <h3>General Interpretation</h3>
+                    </div>
+                    <div class="card-content">
+                        <p id="meaningText">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- Key Findings -->
+                <div class="result-card findings-card">
+                    <div class="card-header">
+                        <h3>Identified Values</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul class="findings-list" id="findingsList">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="result-card next-steps-card">
+                    <div class="card-header">
+                        <h3>Suggested Follow-up</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="steps-intro">Standard follow-up procedures may include:</p>
+                        <ol class="steps-list" id="stepsList">
+                        </ol>
+                        <p class="steps-note">These are general guidelines only. Individual recommendations should come
+                            from your healthcare provider.</p>
+                    </div>
+                </div>
+
+                <!-- Medical Disclaimer -->
+                <div class="disclaimer-card">
+                    <div class="disclaimer-header">
+                        <h3>Medical Disclaimer</h3>
+                    </div>
+                    <div class="disclaimer-content">
+                        <p><strong id="mainDisclaimer">This analysis is not a medical diagnosis.</strong></p>
+                        <p id="consultationReminder">Consult a qualified healthcare professional before making any
+                            medical decisions.</p>
+                        <p class="confidence-note" id="confidenceNote" style="display: none;"></p>
+                        <p class="disclaimer-detail">
+                            This report has been generated by an automated system for informational purposes only.
+                            It has not been reviewed by a licensed medical professional. The information provided
+                            should not be used as a substitute for professional medical advice, diagnosis, or treatment.
+                            Always seek the advice of your physician or other qualified health provider with any
+                            questions you may have regarding a medical condition.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Section -->
+            <section class="error-section" id="errorSection" style="display: none;">
+                <div class="error-card">
+                    <div class="error-icon"></div>
+                    <h3>Processing Error</h3>
+                    <p id="errorMessage">An error occurred during analysis. Please try again.</p>
+                    <button class="action-btn" id="retryBtn">
+                        <span>Retry</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-disclaimer">
+                    MedExplain is intended for informational purposes only.
+                    It does not provide medical diagnoses. Always consult qualified healthcare professionals.
+                </p>
+                <p class="footer-version">Version 1.0.0</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>

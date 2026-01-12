@@ -1,0 +1,44 @@
+# MedExplain AI - Production Dependencies
+# Core Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# PDF & Text Processing
+pdfplumber==0.10.3
+pytesseract==0.3.10
+python-docx==1.1.0
+
+# Image Processing
+opencv-python-headless==4.9.0.80
+Pillow==10.2.0
+
+# Machine Learning
+torch==2.1.2
+torchvision==0.16.2
+
+# LLM Integration
+openai==1.12.0
+tiktoken==0.5.2
+
+# PDF Report Generation
+weasyprint==60.2
+Jinja2==3.1.3
+
+# Rate Limiting & Security
+slowapi==0.1.9
+python-dotenv==1.0.0
+
+# Logging & Monitoring
+structlog==24.1.0
+
+# Testing
+pytest==7.4.4
+pytest-asyncio==0.23.3
+httpx==0.26.0
+
+# Utilities
+aiofiles==23.2.1
+python-dateutil==2.8.2

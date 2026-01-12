@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  medexplain-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medexplain-ai
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4-turbo-preview}
+      - RATE_LIMIT_PER_MINUTE=30
+      - RATE_LIMIT_PER_HOUR=200
+      - ENABLE_MULTI_TENANT=true
+    volumes:
+      - ./outputs:/app/outputs
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Development configuration
+  medexplain-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medexplain-dev
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./app:/app/app
+      - ./outputs:/app/outputs
+    command: [ "python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
+    profiles:
+      - dev

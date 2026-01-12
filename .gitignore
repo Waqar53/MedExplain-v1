@@ -1,0 +1,60 @@
+# Environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Output files (keep directory, ignore contents)
+outputs/*
+!outputs/.gitkeep
+
+# Model weights (large files) - only at root level
+/*.pt
+/*.pth
+/*.bin
+/ml_models/
+
+# macOS
+.DS_Store
+
+# Docker
+.docker/
